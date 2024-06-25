@@ -1,0 +1,39 @@
+{
+  "short_name": "Meu Pitch",
+  "name": "Meu Pitch",
+  "description": "Um site que une Startups e Entusiastas nas mais diversas áreas!",
+  "icons": [
+    {
+      "src": "/img/foia.ico",
+      "sizes": "256x171",
+      "type": "image/ico"
+    },
+    {
+      "src": "/img/foia.jpg",
+      "sizes": "750x500",
+      "type": "image/jpg"
+    },
+    {
+      "src": "/img/pequeno.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/img/screenshot.png",
+      "sizes": "1920x964",
+      "type": "image/jpg",
+      "platform": "wide",
+      "label": "list of"
+    }
+  ],
+  "background_color": "#EEE",
+  "theme_color": "#1565c0",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "orientation": "portrait-primary",
+  "id": "index.html",
+  "dir": "ltr",
+  "lang": "pt"
+}
