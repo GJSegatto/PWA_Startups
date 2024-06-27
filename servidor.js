@@ -17,10 +17,22 @@ app.post('/cadastrar_entusiasta', async function(req, res) {
     try {
     const collection = db.collection("Entusiastas");
     await collection.insertOne(new_user);
+    
+    if(new_user.interesses != null) {
+        const interesses = db.collection("Interesses");
+        for(let i = 0; i < new_user.interesses.length; i++) {
+            const int = new_user.interesses[i];
+            await interesses.updateOne(
+                {area: int},
+                {$addToSet: {interessados: new_user._id}}
+            );
+        }
+    }
+    
     res.json({message: "USUÁRIO CADASTRADO"});
     } catch(err) {
         res.status(500).json({message: "Erro ao cadastrar entusiasta."});
-    } 
+    }
 });
 
 app.post('/cadastrar_startup', async function(req, res){
@@ -32,6 +44,17 @@ app.post('/cadastrar_startup', async function(req, res){
         res.json({message:"STARTUP CADASTRADA"});
     } catch(err){
         res.status(500).json({message: "Erro ao cadastrar startup."});
+    }
+});
+
+app.get('/numero_clientes', async function(req, res) {
+    try {
+        const entusiastas = db.collection('Entusiastas');
+        const count = await entusiastas.countDocuments();
+        res.json({quantidade: count})
+    } catch(err) {
+        console.error(err);
+        res.status(500).json({message: "Erro ao obter o número de clientes."});
     }
 });
 
