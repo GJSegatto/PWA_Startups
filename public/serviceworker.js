@@ -2,7 +2,7 @@ var versao=1;
 
 const CACHE_NAME = 'cache-v5';
 // List the files to precache
-const PRECACHE_ASSETS = ['/', 'index.html','/js/utils.js', '/js/notifications.js']
+const PRECACHE_ASSETS = ['/', 'index.html','./js/utils.js', './js/notifications.js', './js/keys.js']
 
 self.addEventListener('install',async function(event) {
     console.log('Roda o install')

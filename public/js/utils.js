@@ -1,11 +1,9 @@
-const keys = require('../../keys.json');
-
 document.getElementById('botao_entusiasta').addEventListener('click', () => {
-    window.location.href = '/cadastro_entusiasta.html';
+    window.location.href = '/pagina_entusiasta.html';
 });
 
 document.getElementById('botao_startup').addEventListener('click', () => {
-    window.location.href = '/cadastro_startup.html';
+    window.location.href = '/pagina_startup.html';
 });
 
 function urlBase64ToUint8Array(base64String) {
@@ -26,18 +24,18 @@ function urlBase64ToUint8Array(base64String) {
 //Testa se o navegador suporta o serviceworker
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register("/serviceworker.js")
-    .then(function(registration){
+    .then(registration => {
         var settings = {
             public: keys.publicKey,
             PushSubscription: ''
         }
-        console.log("Registrou o serviceworker!");
+        console.log("Registrou o serviceworker!"); 
         notification_permisson(registration, settings);
-    }).catch(function(err){
+    }).catch(function(err) {
         console.log(err);
-    });
+    })
  } else {
-    console.log("Service Worker não é suportado.")
+    console.log("Service Worker não é suportado.");
  }
 
  function notification_permisson(registration, settings) {
@@ -50,7 +48,7 @@ if ('serviceWorker' in navigator) {
         }
         return registration.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(keys.publicKey)
+            applicationServerKey: urlBase64ToUint8Array(publicKey)
         })
         .then(function(subscription) {
             console.log('pushSubscription', JSON.stringify(subscription));
@@ -58,7 +56,7 @@ if ('serviceWorker' in navigator) {
             if(Notification.permission === 'denied') {
                 console.log('Notificações bloqueadas.');
                 return;
-            } else console.log('Notificações habilitadas.')
+            } else console.log('Notificações habilitadas.');
         });
     });
  };
@@ -82,13 +80,13 @@ if ('serviceWorker' in navigator) {
     }
 
     return checked_list;
- }
+ };
 
 async function cadastrar_entusiasta() {
     try {
         const nome = document.getElementById('nome_pessoa').value.trim();
         const email = document.getElementById('email').value.trim();
-        const checked_list = checked_boxes()
+        const checked_list = checked_boxes();
         const response = await fetch("/numero_clientes", {
             method: "GET",
             headers: {
@@ -104,21 +102,17 @@ async function cadastrar_entusiasta() {
             interesses : checked_list
         };
 
-        await fetch("/cadastrar_entusiasta", {
+        return await fetch("/cadastrar_entusiasta", {
             method: "POST",
             headers: {
                 'Content-Type' : 'application/json'
             },
             body: JSON.stringify(new_user),
         })
-        .then(function(res) { 
-            return res.json(); 
-        })
-        .then(data => {
-            console.log("Sucesso:", data);
-        })
+        .then(res => res.json())
         .catch((err) => {
-            console.erros("Erro ao cadastrar startup:", err);
+            console.error("Erro ao cadastrar usuario:", err);
+            throw err;
         });
 
     } catch(err) {
@@ -130,9 +124,9 @@ async function cadastrar_startup() {
     const nome_prop = document.getElementById('nome_pessoa').value.trim();
     const nome_empresa = document.getElementById('nome_startup').value.trim();
     const url = document.getElementById('url').value.trim();
-    const email = document.getElementById('email').value.trim()
+    const email = document.getElementById('email').value.trim();
     const desc = document.getElementById('descricao').value.trim();
-    const checked_list = checked_boxes() 
+    const checked_list = checked_boxes();
 
     const new_startup = {
         nome_empresa: nome_empresa,
@@ -162,5 +156,5 @@ async function cadastrar_startup() {
     //push.send(IDDASPESSOA,DADO);
     //.then((results) => {"notificacao enviada"})
     //.catch((err) => {"deu erro na notificacao"})
-}
+};
 

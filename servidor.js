@@ -29,7 +29,17 @@ app.post('/cadastrar_entusiasta', async function(req, res) {
         }
     }
     
-    res.json({message: "USUÁRIO CADASTRADO"});
+    let empresasRelacionadas = [];
+    const empresas = db.collection("Empresas");
+    empresasRelacionadas = await empresas.find(
+        {areas: {$in: new_user.interesses}},
+        {projection: {_id: 0}}
+    ).toArray();
+    
+    res.json({
+        message: "USUÁRIO CADASTRADO",
+        empresasRelacionadas: empresasRelacionadas
+    });
     } catch(err) {
         res.status(500).json({message: "Erro ao cadastrar entusiasta."});
     }
