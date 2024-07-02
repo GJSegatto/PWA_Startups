@@ -5,12 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Pitch</title>
     <link rel="manifest" href="/app.webmanifest">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <h1>BEM VINDO AO MEU PITCH</h1>
-    <button id="botao_entusiasta">Cadastrar Entusiasta</button>
-    <button id="botao_startup">Cadastrar Empresa</button>
+<body class="font-mono bg-gradient-to-tr from-blue-500 to-purple-500 bg-no-repeat bg-cover min-h-screen">
+    <div class="flex justify-evenly items-center flex-col text-center overflow-auto min-h-screen">
+        <h1 class="text-6xl font-bold font-mono text-white mb-20">BEM VINDO AO MEU PITCH</h1>
+        <div class="flex flex-col h-2/3 w-2/3 md:flex-row justify-center items-center bg-slate-200 shadow-slate-700 shadow-lg rounded-xl px-5">
+            <div class="flex flex-col items-center justify-around border-b-2 md:border-r-2 md:border-b-0 border-slate-600 pr-4 h-3/4">
+                <h1 class="text-3xl">É UM ENTUSIASTA?</h1>
+                <p class="text-lg text-center">Clique no botão abaixo e cadastre-se para conhecer diversas Startups!</p>
+                <button id="botao_entusiasta" class="redirect btn_cadastro" data-url="/pagina_entusiasta.html">Cadastrar Entusiasta</button>
+            </div>
+            <div class="flex flex-col items-center justify-around pl-4 h-3/4">
+                <h1 class="text-3xl">É DONO DE UMA STARTUP?</h1>
+                <p class="text-lg text-center">Clique no botão abaixo e cadastre-se para atingir diversos entusiastas!</p>
+                <button id="botao_startup" class="redirect btn_cadastro" data-url="/pagina_startup.html">Cadastrar Empresa</button>
+            </div>
+        </div>
+    </div>
 </body>
 <script src="./js/utils.js"></script>
-<script src="./js/notifications.js"></script>
 </html>

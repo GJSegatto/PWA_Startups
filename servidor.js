@@ -17,7 +17,6 @@ app.post('/cadastrar_entusiasta', async function(req, res) {
     try {
     const collection = db.collection("Entusiastas");
     await collection.insertOne(new_user);
-    
     if(new_user.interesses != null) {
         const interesses = db.collection("Interesses");
         for(let i = 0; i < new_user.interesses.length; i++) {
@@ -35,7 +34,7 @@ app.post('/cadastrar_entusiasta', async function(req, res) {
         {areas: {$in: new_user.interesses}},
         {projection: {_id: 0}}
     ).toArray();
-    
+
     res.json({
         message: "USUÁRIO CADASTRADO",
         empresasRelacionadas: empresasRelacionadas
@@ -49,9 +48,11 @@ app.post('/cadastrar_startup', async function(req, res){
     const new_startup = req.body;
     try {   
         const collection = db.collection("Empresas");
-        console.log(new_startup)
         await collection.insertOne(new_startup);
-        res.json({message:"STARTUP CADASTRADA"});
+        res.json({
+            message:"STARTUP CADASTRADA", 
+            infos: new_startup
+        });
     } catch(err){
         res.status(500).json({message: "Erro ao cadastrar startup."});
     }

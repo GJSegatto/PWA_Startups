@@ -1,9 +1,8 @@
-document.getElementById('botao_entusiasta').addEventListener('click', () => {
-    window.location.href = '/pagina_entusiasta.html';
-});
-
-document.getElementById('botao_startup').addEventListener('click', () => {
-    window.location.href = '/pagina_startup.html';
+document.querySelectorAll('.redirect').forEach(botao => {
+    botao.addEventListener('click', () => {
+        const url = botao.getAttribute('data-url');
+        window.location.href = url;
+    });
 });
 
 function urlBase64ToUint8Array(base64String) {
@@ -24,42 +23,9 @@ function urlBase64ToUint8Array(base64String) {
 //Testa se o navegador suporta o serviceworker
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register("/serviceworker.js")
-    .then(registration => {
-        var settings = {
-            public: keys.publicKey,
-            PushSubscription: ''
-        }
-        console.log("Registrou o serviceworker!"); 
-        notification_permisson(registration, settings);
-    }).catch(function(err) {
-        console.log(err);
-    })
  } else {
     console.log("Service Worker não é suportado.");
  }
-
- function notification_permisson(registration, settings) {
-    return registration.pushManager.getSubscription()
-    .then(function(subscription) {
-        if(subscription) {
-            console.log('Já possui pushSubscription', JSON.stringify(subscription));
-            settings.PushSubscription = subscription;
-            return;
-        }
-        return registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(publicKey)
-        })
-        .then(function(subscription) {
-            console.log('pushSubscription', JSON.stringify(subscription));
-            settings.PushSubscription = subscription;
-            if(Notification.permission === 'denied') {
-                console.log('Notificações bloqueadas.');
-                return;
-            } else console.log('Notificações habilitadas.');
-        });
-    });
- };
 
  function checked_boxes() {
     const opcoes = {
@@ -87,6 +53,24 @@ async function cadastrar_entusiasta() {
         const nome = document.getElementById('nome_pessoa').value.trim();
         const email = document.getElementById('email').value.trim();
         const checked_list = checked_boxes();
+        var end = '';
+
+        await navigator.serviceWorker.ready.then(registration => {
+            Notification.requestPermission()
+            .then(permission => {
+                if(permission === "granted") {
+                    registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array('BA3DvIDKg-C2UhFpO2AzKBh-WPuT4Af9sgQwXoDcr0NlOVycISkNd4WpzHNZfLB3FWvpT_tRVt37kSSX8cVSMtE')
+                    })
+                    .then(subscription => {
+                        console.log("Inscrito com sucesso!", subscription);
+                        end = subscription.endpoint;
+                    })
+                }
+            })
+        })
+
         const response = await fetch("/numero_clientes", {
             method: "GET",
             headers: {
@@ -95,66 +79,90 @@ async function cadastrar_entusiasta() {
         });
     
         const nro = await response.json();
+        console.log(nro);
         const new_user = {
             _id: nro.quantidade+1,
             nome: nome,
             email: email,
-            interesses : checked_list
+            interesses : checked_list,
+            endpoint: end
+        };
+        try {
+            const res = await fetch("/cadastrar_entusiasta", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(new_user),
+            });
+            return await res.json();
+        } catch (err) {
+            console.error("Erro ao cadastrar usuario:", err);
+            throw err;
+        }
+    } catch(err) {
+        console.log(err);
+    }
+};
+
+async function cadastrar_startup() {
+    try{
+        const nome_prop = document.getElementById('nome_pessoa').value.trim();
+        const nome_empresa = document.getElementById('nome_startup').value.trim();
+        const url = document.getElementById('url').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const desc = document.getElementById('descricao').value.trim();
+        const checked_list = checked_boxes();
+
+        const new_startup = {
+            nome_empresa: nome_empresa,
+            nome_proprietario: nome_prop,
+            url: url,
+            email: email,
+            descricao: desc,
+            areas : checked_list
         };
 
-        return await fetch("/cadastrar_entusiasta", {
+        await fetch("/cadastrar_startup", {
             method: "POST",
             headers: {
                 'Content-Type' : 'application/json'
             },
-            body: JSON.stringify(new_user),
+            body: JSON.stringify(new_startup),
         })
         .then(res => res.json())
+        .then(data => {
+            const {_id, ...rest} = data;
+            return rest;
+        })
         .catch((err) => {
-            console.error("Erro ao cadastrar usuario:", err);
+            console.error("Erro ao cadastrar startup:", err);
             throw err;
         });
-
     } catch(err) {
         console.log(err);
-    } 
+    }
 };
 
-async function cadastrar_startup() {
-    const nome_prop = document.getElementById('nome_pessoa').value.trim();
-    const nome_empresa = document.getElementById('nome_startup').value.trim();
-    const url = document.getElementById('url').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const desc = document.getElementById('descricao').value.trim();
-    const checked_list = checked_boxes();
+async function envia_notificacao() {
+    if (Notification.permission !== "granted")
+        Notification.requestPermission();
+    else {
+        var notification = new Notification('Nova empresa em sua área de interesse!', {
+            icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
+            body: "Confira!",
+        });
+    webpush.sendNotification(
+        pushSubscription,
+        JSON.stringify({
+            title: 'Mensagem',
+            message: 'valor'
+        })
+    );
+}
+}
 
-    const new_startup = {
-        nome_empresa: nome_empresa,
-        nome_proprietario: nome_prop,
-        url: url,
-        email: email,
-        descricao: desc,
-        areas : checked_list
-    };
-
-    await fetch("/cadastrar_startup", {
-        method: "POST",
-        headers: {
-            'Content-Type' : 'application/json'
-        },
-        body: JSON.stringify(new_startup),
-    })
-    .then(function(res) { 
-        return res.json(); 
-    })
-    .then(data => {
-        console.log("Sucesso:", data);
-    })
-    .catch((err) => {
-        console.erros("Erro ao cadastrar startup:", err);
-    });
-    //push.send(IDDASPESSOA,DADO);
-    //.then((results) => {"notificacao enviada"})
-    //.catch((err) => {"deu erro na notificacao"})
-};
+//push.send(IDDASPESSOA,DADO);
+//.then((results) => {"notificacao enviada"})
+//.catch((err) => {"deu erro na notificacao"})
 
