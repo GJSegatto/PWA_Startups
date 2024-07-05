@@ -2,7 +2,7 @@ var versao=1;
 
 const CACHE_NAME = 'cache-v5';
 // List the files to precache
-const PRECACHE_ASSETS = ['/', 'index.html','./js/utils.js']
+const PRECACHE_ASSETS = ['/', 'index.html', 'pagina_startup.html', 'pagina_entusiasta.html', './js/utils.js']
 
 self.addEventListener('install',async function(event) {
     console.log('Roda o install')
@@ -32,40 +32,28 @@ return networkResponse;
     }
 }
 
-
-self.addEventListener('notificationclick', function(event) {
-    event.notification.close();
-   
-  }, false);
-  
-  self.addEventListener('push', function(event) {
+self.addEventListener('push', function(event) {
     if (!(self.Notification && self.Notification.permission === 'granted')) {
-      return;
+        return;
     }
-  
     var data = {};
     if (event.data) {
         data = event.data.json();
     }
-    var title = data.title || "Something Has Happened";
-    var message = data.message || "Here's something you might want to check out.";
     event.waitUntil(
-        getMessageDetails()
+        self.registration.showNotification('NOVA EMPRESA CADASTRADA', {
+            body: 'UMA NOVA EMPRESA ESTÁ EM BUSCA DE INVESTIDORES OU PARCEIROS DE NEGÓCIOS!'
+        })
         .then(function (details) {
             self.registration.showNotification(details.title, {
             body: details.message,
             icon: 'icons/pequeno.png',
             badge: 'icons/pequeno.png',
-            renotify:true,
-            tag: 'teste'
             });
         })
     );
-  
 });
   
-
-/*
 self.addEventListener("fetch", (event) => {
 const url = new URL(event.request.url);
 
@@ -78,4 +66,3 @@ else {
     }
 }
 });
-*/

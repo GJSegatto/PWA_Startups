@@ -21,10 +21,40 @@ h1 {
     animation: gradientShift 3s infinite ease-in-out alternate; /* Aplica a animação */
 }
 
+body {
+  @apply font-mono bg-gradient-to-tr from-blue-500 to-purple-500 
+  bg-no-repeat bg-cover min-h-screen
+}
+
+#cadastro > input {
+  @apply border-white scale-100 transition-all duration-500 
+  ease-in-out hover:scale-110 checked:scale-100 w-1/2 h-10
+}
+
+.form_label {
+  @apply absolute top-1/2 translate-y-[-50%] bg-slate-200 left-4 px-2 
+  peer-focus:top-0 peer-focus:left-3 font-light text-base peer-focus:text-sm 
+  peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 
+  peer-valid:text-sm peer-valid:text-blue-500 duration-150
+}
+
+.form_input {
+  @apply w-full bg-transparent outline-none px-4 text-base rounded-xl 
+  bg-slate-200 border border-blue-500 focus:shadow-md
+}
+
 .btn_cadastro {
     @apply relative px-8 py-2 rounded-md bg-white isolation-auto z-10 border-2 
-    border-blue-500 w-auto before:absolute before:w-full before:transition-all 
+    border-purple-500 w-auto before:absolute before:w-full before:transition-all 
     before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 
-    before:rounded-full before:bg-blue-500 before:-z-10 before:aspect-square 
+    before:rounded-full before:bg-purple-500 before:-z-10 before:aspect-square 
     before:hover:scale-150 overflow-hidden before:hover:duration-500
+}
+
+li {
+  @apply inline-block mr-8
+}
+
+li > label {
+  @apply pl-4
 }

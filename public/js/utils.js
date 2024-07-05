@@ -53,23 +53,19 @@ async function cadastrar_entusiasta() {
         const nome = document.getElementById('nome_pessoa').value.trim();
         const email = document.getElementById('email').value.trim();
         const checked_list = checked_boxes();
-        var end = '';
+        var sub = '';
 
-        await navigator.serviceWorker.ready.then(registration => {
-            Notification.requestPermission()
-            .then(permission => {
-                if(permission === "granted") {
-                    registration.pushManager.subscribe({
-                        userVisibleOnly: true,
-                        applicationServerKey: urlBase64ToUint8Array('BA3DvIDKg-C2UhFpO2AzKBh-WPuT4Af9sgQwXoDcr0NlOVycISkNd4WpzHNZfLB3FWvpT_tRVt37kSSX8cVSMtE')
-                    })
-                    .then(subscription => {
-                        console.log("Inscrito com sucesso!", subscription);
-                        end = subscription.endpoint;
-                    })
-                }
-            })
-        })
+        const registration = await navigator.serviceWorker.ready;
+        const permission = await Notification.requestPermission();
+
+        if (permission === "granted") {
+            const subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array('BA3DvIDKg-C2UhFpO2AzKBh-WPuT4Af9sgQwXoDcr0NlOVycISkNd4WpzHNZfLB3FWvpT_tRVt37kSSX8cVSMtE')
+            });
+            console.log("Inscrito com sucesso!", subscription);
+            sub = JSON.stringify(subscription);
+        } else sub = null;
 
         const response = await fetch("/numero_clientes", {
             method: "GET",
@@ -85,21 +81,17 @@ async function cadastrar_entusiasta() {
             nome: nome,
             email: email,
             interesses : checked_list,
-            endpoint: end
+            subscription: sub
         };
-        try {
-            const res = await fetch("/cadastrar_entusiasta", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(new_user),
-            });
-            return await res.json();
-        } catch (err) {
-            console.error("Erro ao cadastrar usuario:", err);
-            throw err;
-        }
+        
+        const res = await fetch("/cadastrar_entusiasta", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(new_user),
+        });
+        return await res.json();
     } catch(err) {
         console.log(err);
     }
@@ -123,46 +115,30 @@ async function cadastrar_startup() {
             areas : checked_list
         };
 
-        await fetch("/cadastrar_startup", {
+        const res = await fetch("/cadastrar_startup", {
             method: "POST",
             headers: {
                 'Content-Type' : 'application/json'
             },
             body: JSON.stringify(new_startup),
         })
-        .then(res => res.json())
-        .then(data => {
-            const {_id, ...rest} = data;
-            return rest;
-        })
-        .catch((err) => {
-            console.error("Erro ao cadastrar startup:", err);
-            throw err;
-        });
+        const data = await res.json();
+
+        await envia_notificacao(new_startup.areas);
+        
+        const {_id, ...rest} = data;
+        return rest;
+        
     } catch(err) {
         console.log(err);
     }
 };
 
-async function envia_notificacao() {
-    if (Notification.permission !== "granted")
-        Notification.requestPermission();
-    else {
-        var notification = new Notification('Nova empresa em sua área de interesse!', {
-            icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
-            body: "Confira!",
-        });
-    webpush.sendNotification(
-        pushSubscription,
-        JSON.stringify({
-            title: 'Mensagem',
-            message: 'valor'
-        })
-    );
+async function envia_notificacao(areas) {
+    await fetch(`/subscriptions?areas=${encodeURIComponent(areas.join(','))}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })    
 }
-}
-
-//push.send(IDDASPESSOA,DADO);
-//.then((results) => {"notificacao enviada"})
-//.catch((err) => {"deu erro na notificacao"})
-
