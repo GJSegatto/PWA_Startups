@@ -7,7 +7,6 @@ const PRECACHE_ASSETS = ['/', 'index.html', 'pagina_startup.html', 'pagina_entus
 self.addEventListener('install',async function(event) {
     console.log('Roda o install')
         /* O evento de install é ativado somente uma vez, quando você registra a versão do sw.js pela primeira vez. Se o sw.js muda uma única coisa, o install é chamado novamente. Use esse evento para preparar tudo que seja necessário */
-        
         const cache = await caches.open(CACHE_NAME);
         cache.addAll(PRECACHE_ASSETS);
     });
@@ -52,17 +51,4 @@ self.addEventListener('push', function(event) {
             });
         })
     );
-});
-  
-self.addEventListener("fetch", (event) => {
-const url = new URL(event.request.url);
-
-if (url.pathname.match("css/meuEstilo.css")) {
-event.respondWith(networkFirst('css/meuEstilo2.css'));
-}
-else {
-    if (url.pathname.match(/^\/inbox/)) {
-        event.respondWith(networkFirst(event.request));
-    }
-}
 });

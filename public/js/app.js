@@ -113,11 +113,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     </div>
                 </div>
-                <div v-else>
-                    <ul v-for="empresa in empresasRelacionadas" >
-                        <li> {{empresa}} </li>
-                    </ul>
-                    <button @click="limparLocalStorage">Limpa memória</button>
+                <div v-else class="flex justify-evenly items-center flex-col text-justify overflow-auto min-h-screen text-lg px-8">
+                    <div v-for="empresa in empresasRelacionadas" class="flex flex-col w-full h-auto gap-8 p-8 my-8 text-center items-center bg-slate-200 shadow-slate-700 shadow-lg rounded-xl text-lg md:text-2xl">
+                        <h1 class="text-3xl md:text-6xl w-full pb-4 mb-8 border-b-2 border-purple-500">{{empresa.nome_empresa}}</h1>
+                        <p>{{empresa.descricao}}</p>
+                        <p>Proprietário: {{empresa.nome_proprietario}}</p>
+                        <p>Meio de contato: {{empresa.email}}</p>
+                        <p>Link do Pitch: {{empresa.url}}</p>
+                        <ul v-for="area in empresa.areas">
+                            <li class="m-0"><h1>{{area.toUpperCase()}}</h1></li>
+                        </ul>
+                    </div>
+                    <button @click="limparLocalStorage" class="btn_cadastro">Limpa memória</button>
                 </div>
             `
         }).mount('#app_entusiasta');
@@ -224,17 +231,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         <button @click="cadastrarStartup" class="btn_cadastro" id="botao">Cadastrar</button>
                     </div>
                 </div>
-                <div v-else class="flex justify-center items-center">
-                    <div class="flex flex-col w-full h-auto gap-8 p-8 m-8 justify-center items-center bg-slate-200 shadow-slate-700 shadow-lg rounded-xl text-xl">
-                        <h1 class="text-3xl">{{infos.nome_empresa}}</h1>
+                <div v-else class="flex justify-evenly items-center flex-col text-justify overflow-auto min-h-screen text-lg">
+                    <div class="flex flex-col md:w-2/3 h-auto gap-8 p-8 md:m-8 text-center items-center bg-slate-200 shadow-slate-700 shadow-lg rounded-xl text-lg md:text-2xl">
+                        <h1 class="text-3xl md:text-6xl w-full pb-4 mb-8 border-b-2 border-purple-500">{{infos.nome_empresa}}</h1>
                         <p>Proprietário: {{infos.nome_proprietario}}</p>
                         <p>Meio de contato: {{infos.email}}</p>
                         <p>Link do Pitch: {{infos.url}}</p>
                         <p>Áreas de atuação:</p>
                         <ul v-for="area in infos.areas" >
-                            <li> <h1>{{area}}</h1> </li>
+                            <li class="m-0"> <h1>{{area.toUpperCase()}}</h1> </li>
                         </ul>
-                        <button @click="limparLocalStorage">Limpa memória</button>  
+                        <button @click="limparLocalStorage" class="btn_cadastro">Limpa memória</button>  
                     </div>
                 </div>
             `

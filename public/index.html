@@ -8,16 +8,16 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="flex justify-evenly items-center flex-col text-center overflow-auto min-h-screen">
+    <div class="flex md:justify-evenly items-center flex-col text-center overflow-auto min-h-screen px-4 py-8 md:py-0 gap-y-8">
         <h1 class="text-6xl font-bold">BEM VINDO AO MEU PITCH</h1>
-        <div class="flex flex-col gap-4 h-auto w-2/3 md:flex-row bg-slate-200 shadow-slate-700 shadow-lg rounded-xl p-5">
+        <div class="flex flex-col gap-4 h-auto md:w-2/3 md:flex-row bg-slate-200 shadow-slate-700 shadow-lg rounded-xl p-5">
             <div class="flex flex-col gap-12 justify-center items-center border-b-2 md:border-r-2 md:border-b-0 border-purple-500 md:pr-4 h-auto">
                 <h1 class="text-3xl">É UM ENTUSIASTA?</h1>
                 <p class="text-lg text-center">Clique no botão abaixo e cadastre-se para conhecer diversas Startups!</p>
                 <button id="botao_entusiasta" class="redirect btn_cadastro mb-4" data-url="/pagina_entusiasta.html">Cadastrar Entusiasta</button>
             </div>
             <div class="flex flex-col gap-12 justify-center items-center md:pl-4 h-auto">
-                <h1 class="text-3xl">É DONO DE STARTUP?</h1>
+                <h1 class="text-3xl mt-4 md:mt-0">É DONO DE STARTUP?</h1>
                 <p class="text-lg text-center">Clique no botão abaixo e cadastre-se para atingir diversos entusiastas!</p>
                 <button id="botao_startup" class="redirect btn_cadastro" data-url="/pagina_startup.html">Cadastrar Empresa</button>
             </div>
